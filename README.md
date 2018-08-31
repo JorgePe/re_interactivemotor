@@ -33,3 +33,13 @@ The motor needs some kind of warm up, I'm sending almost 1 second of zeros (trie
 I think the motor needs this to leave sleep mode. If connection to motor is lost for too much time, the motor needs this warm up again and previous position is lost.
 
 The motor requires a Init command. When the motor is not initialized, he keeps sending a short message.
+
+After initialization, if we keep sending a 1-byte message ('02h') the motor returns a 10-byte message containing its encoder status:
+
+SB SPEED D0=LSB D1 D2 D3=MSB 00 00 00 CRC
+
+* SB is the Start Byte and is always 'D8h'.
+* SPEED is positive when motor is rotating clockwise. Not sure about units used.
+* D0..D3 contain the position in degrees. It's the same value we can read in BOOST notifications (but not values are reported by BOOST, it misses a few)
+* I already have silly function to calculate CRC but will try to simplify it before writing it here
+
